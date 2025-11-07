@@ -1,0 +1,26 @@
+## second equilibrium. hrex after orbital pulling. close distances to AS.
+#
+#RESTART
+
+WHOLEMOLECULES ENTITY0=1-3922      #3832 ENTITY1=3833-3922 # prot0 lig1
+MOLINFO STRUCTURE=cluster.pdb
+
+DISTANCE    LABEL=d0    ATOMS=1911,3857                       # cat 160 SER OG vs UNK C19
+DISTANCE    LABEL=d1    ATOMS=3853,3885                         # ext UNK C17 vs C39
+DISTANCE    LABEL=h0    ATOMS=1915,3858                         # oxh 161 MET N vs O7
+DISTANCE    LABEL=h1    ATOMS=797,3858                         # oxh 87 TYR N vs O7
+DISTANCE    LABEL=s0    ATOMS=1911,2991                    # cat 237 HIS NE2 vs cat 160 SER OG
+DISTANCE    LABEL=x0    ATOMS=1911,1915                      # cat 160 SER OG vs oxh 161 MET N     # autohinibition
+DISTANCE    LABEL=x1    ATOMS=1911,797                      # cat 160 SER OG vs oxh 87 TYR N     # autohinibition
+
+UPPER_WALLS ARG=d0 AT=0.3 KAPPA=5000 EXP=2 EPS=1 OFFSET=0 LABEL=d0_uwall        # 4A min distance from ser
+UPPER_WALLS ARG=h0 AT=0.3 KAPPA=5000 EXP=2 EPS=1 OFFSET=0 LABEL=h0_uwall        # 4A min distance from hole
+UPPER_WALLS ARG=h1 AT=0.3 KAPPA=5000 EXP=2 EPS=1 OFFSET=0 LABEL=h1_uwall        # 4A min distance from hole
+UPPER_WALLS ARG=s0 AT=0.3 KAPPA=5000 EXP=2 EPS=1 OFFSET=0 LABEL=s0_uwall        # 4A min distance from hole
+
+#LOWER_WALLS ARG=x0 AT=0.3 KAPPA=5000 EXP=2 EPS=1 OFFSET=0 LABEL=x0_uwall        # 4A max distance from hole
+#LOWER_WALLS ARG=x1 AT=0.3 KAPPA=5000 EXP=2 EPS=1 OFFSET=0 LABEL=x1_uwall        # 4A max distance from hole
+
+LOWER_WALLS ARG=d1 AT=2.4 KAPPA=2550 EXP=2 EPS=1 OFFSET=0 LABEL=d1_lwall        # amorphous stretch
+
+PRINT ARG=* STRIDE=500 FILE=colvar #print less
