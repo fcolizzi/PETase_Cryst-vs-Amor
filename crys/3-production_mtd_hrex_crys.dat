@@ -1,0 +1,38 @@
+## production run md: mtd + hrex cPET-PETase
+#
+#RESTART
+
+WHOLEMOLECULES ENTITY0=1-3922      #3832 ENTITY1=3833-3922 # prot0 lig1
+
+DISTANCE    LABEL=d0    ATOMS=1911,3857                       # cat 160 SER OG vs UNK C19
+DISTANCE    LABEL=d1    ATOMS=3853,3885                         # ext UNK C17 vs C39
+DISTANCE    LABEL=h0    ATOMS=1915,3858                         # oxh 161 MET N vs O7
+DISTANCE    LABEL=h1    ATOMS=797,3858                         # oxh 87 TYR N vs O7
+DISTANCE    LABEL=s0    ATOMS=1911,2991                    # cat 237 HIS NE2 vs cat 160 SER OG
+DISTANCE    LABEL=x0    ATOMS=1911,1915                      # cat 160 SER OG vs oxh 161 MET N     # autohinibition
+DISTANCE    LABEL=x1    ATOMS=1911,797                      # cat 160 SER OG vs oxh 87 TYR N     # autohinibition
+
+metad: METAD ...
+
+    ARG=h0,h1                         # h0,h1
+    SIGMA=0.05,0.05                 # 0.5*fluctuation ~ 1A
+    HEIGHT=@replicas:0.5,0.564646,0.637648,0.720091,0.813191,0.918329,1.03706,1.17114                               # standard ~0.1-1.0*kBT KJ/mol | ~0.02-1.20 d, ~1.0-2.0 a -> TAU???
+    PACE=500                        # ~100-500 steps relax system before next hill add # change from 400 to 500!!!
+    BIASFACTOR=15                   # barriers 20-30 KJ/mol need a bias factor of ~10-15 biol syst # change from 30 to 15!!!
+    TEMP=298                      # well-tempered
+    GRID_MIN=-1.0,-1.0
+    GRID_MAX=2.0,2.0                # max min values cv, store hills in file, memory efficient ?
+
+...
+
+UPPER_WALLS ARG=h0 AT=0.6 KAPPA=5000 EXP=2 EPS=1 OFFSET=0 LABEL=h0_uwall        # 6A max distance from hole
+UPPER_WALLS ARG=h1 AT=0.6 KAPPA=5000 EXP=2 EPS=1 OFFSET=0 LABEL=h1_uwall        # 6A max distance from hole
+#UPPER_WALLS ARG=s0 AT=0.6 KAPPA=5000 EXP=2 EPS=1 OFFSET=0 LABEL=s0_uwall        # 6A max distance from hole
+#UPPER_WALLS ARG=d0 AT=0.6 KAPPA=5000 EXP=2 EPS=1 OFFSET=0 LABEL=d0_uwall        # 6A max distance from ser
+#LOWER_WALLS ARG=x0 AT=0.6 KAPPA=5000 EXP=2 EPS=1 OFFSET=0 LABEL=x0_uwall        # 6A max distance from hole
+#LOWER_WALLS ARG=x1 AT=0.6 KAPPA=5000 EXP=2 EPS=1 OFFSET=0 LABEL=x1_uwall        # 6A max distance from hole
+
+LOWER_WALLS ARG=d1 AT=4.0 KAPPA=2550 EXP=2 EPS=1 OFFSET=0 LABEL=d1_lwall        # crystalline stretch
+
+PRINT ARG=* STRIDE=1000 FILE=colvar #print less
+
