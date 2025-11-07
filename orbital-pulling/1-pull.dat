@@ -1,0 +1,31 @@
+UNITS LENGTH=A				# change all dist in Angstroms!!!
+
+WHOLEMOLECULES ENTITY0=1-3922		#3832 ENTITY1=3833-3922 # prot0 lig1
+MOLINFO STRUCTURE=eq.pdb
+
+DISTANCE    LABEL=d0	ATOMS=1911,3857   					# 131 SER OG vs UNK C19
+DISTANCE    LABEL=d1	ATOMS=3853,3885     					# UNK C17 vs C39
+COM 	    LABEL=C0	ATOMS=1-3832     					# prot0
+DISTANCE    LABEL=d2	ATOMS=3857,C0	        				# UNK C19 vs com
+ANGLE 	    LABEL=a0	ATOMS=1906,C0,3857					# 131 SER CA vs com vs UNK C19
+DISTANCE    LABEL=h0	ATOMS=1915,3858     					# 161 MET N vs O7
+DISTANCE    LABEL=h1	ATOMS=797,3858     					#  87 TYR N vs O7
+DRMSD	    LABEL=drms0 REFERENCE=refcoord.pdb	LOWER_CUTOFF=0.0 UPPER_CUTOFF=8.0 # CA prot and xray 
+
+FIXEDATOM  LABEL=a1	AT=-28.910,49.410,27.760						# dummy atoms coord at ser CA 
+DISTANCE   LABEL=d3	ATOMS=a1,1906						# dist dummy cat ser CA
+
+MOVINGRESTRAINT ...
+
+ARG=a0,d2,d0,h0,h1,drms0
+STEP0=0        AT0=0,25,5,3,3,0    KAPPA0=0,0,0,0,0,0				# starting point
+STEP1=2500     AT1=0,25,5,3,3,0    KAPPA1=5000,5000,0,0,0,0			# orbiting
+STEP2=5000     AT2=0,25,5,3,3,0    KAPPA2=5000,5000,0,0,0,0			# stabilizing
+STEP3=17500    AT3=0,25,5,3,3,0    KAPPA3=0,0,0,5000,5000,5000			# drms and hole pull to xray align
+
+... MOVINGRESTRAINT
+
+LOWER_WALLS ARG=d1 AT=23 KAPPA=250 EXP=2 EPS=1 OFFSET=0 LABEL=lwall		# prevents ligand to wrap
+UPPER_WALLS ARG=d3 AT=2  KAPPA=500 EXP=2 EPS=1 OFFSET=0 LABEL=uwall		# prevents ligand to wrap
+
+PRINT    ARG=*    STRIDE=10    FILE=COLVAR
